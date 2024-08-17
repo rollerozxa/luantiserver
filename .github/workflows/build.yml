@@ -24,30 +24,29 @@ jobs:
           repository: minetest/minetest
           path: minetest
           ref: stable-5
-      
+
       - name: Checkout LuaJIT src
         uses: actions/checkout@v4
         with:
           repository: LuaJIT/LuaJIT
           path: luajit
-    
+
       - name: Build LuaJIT
         run: |
           cd luajit
           make amalg
           cd ..
-      
+
       - name: Build Minetest
         run: |
           cd minetest
           mkdir build; cd build
-          cmake .. -DRUN_IN_PLACE=1 -DBUILD_CLIENT=0 -DBUILD_SERVER=1 -DBUILD_UNITTESTS=0 -DLUA_INCLUDE_DIR=../../luajit/src/ -DLUA_LIBRARY=../../luajit/src/libluajit.a -G Ninja
+          cmake .. -DRUN_IN_PLACE=1 -DBUILD_CLIENT=0 -DBUILD_SERVER=1 -DBUILD_UNITTESTS=0 -DENABLE_SYSTEM_GMP=OFF -DENABLE_SYSTEM_JSONCPP=OFF -DLUA_INCLUDE_DIR=../../luajit/src/ -DLUA_LIBRARY=../../luajit/src/libluajit.a -G Ninja
           ninja
           ninja package
-          
+
       - uses: actions/upload-artifact@v4
         with:
           name: minetestserver
           path: minetest/build/*.tar.gz
           if-no-files-found: error
-      
