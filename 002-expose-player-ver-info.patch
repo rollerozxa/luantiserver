@@ -1,0 +1,13 @@
+diff --git a/src/script/lua_api/l_server.cpp b/src/script/lua_api/l_server.cpp
+index af9a526e0..a601be804 100644
+--- a/src/script/lua_api/l_server.cpp
++++ b/src/script/lua_api/l_server.cpp
+@@ -254,7 +254,7 @@ int ModApiServer::l_get_player_information(lua_State *L)
+ 	lua_pushstring(L, info.lang_code.c_str());
+ 	lua_settable(L, table);
+ 
+-#ifndef NDEBUG
++#if 1
+ 	lua_pushstring(L,"serialization_version");
+ 	lua_pushnumber(L, info.ser_vers);
+ 	lua_settable(L, table);

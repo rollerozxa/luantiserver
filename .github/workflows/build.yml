@@ -16,7 +16,7 @@ jobs:
       - name: Install deps
         run: |
           apt-get update
-          apt-get install -y g++ ninja-build make cmake libsqlite3-dev libcurl4-openssl-dev zlib1g-dev libgmp-dev libjsoncpp-dev libzstd-dev libncurses-dev --no-install-recommends
+          apt-get install -y g++ ninja-build make cmake patch libsqlite3-dev libcurl4-openssl-dev zlib1g-dev libgmp-dev libjsoncpp-dev libzstd-dev libncurses-dev --no-install-recommends
 
       - name: Checkout Minetest src
         uses: actions/checkout@v4
@@ -31,22 +31,18 @@ jobs:
           repository: LuaJIT/LuaJIT
           path: luajit
 
-      - name: Build LuaJIT
+      - name: Build server
         run: |
-          cd luajit
-          make amalg
-          cd ..
-
-      - name: Build Minetest
-        run: |
-          cd minetest
-          mkdir build; cd build
-          cmake .. -DRUN_IN_PLACE=1 -DBUILD_CLIENT=0 -DBUILD_SERVER=1 -DBUILD_UNITTESTS=0 -DENABLE_SYSTEM_GMP=OFF -DENABLE_SYSTEM_JSONCPP=OFF -DLUA_INCLUDE_DIR=../../luajit/src/ -DLUA_LIBRARY=../../luajit/src/libluajit.a -G Ninja
-          ninja
-          ninja package
+          ./build_server.sh
 
       - uses: actions/upload-artifact@v4
         with:
-          name: minetestserver
-          path: minetest/build/*.tar.gz
+          name: minetestserver.tar.gz
+          path: minetest/build/minetestserver.tar.gz
+          if-no-files-found: error
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: minetestserver.debug
+          path: minetest/build/minetestserver.debug
           if-no-files-found: error
