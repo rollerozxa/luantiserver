@@ -23,7 +23,7 @@ jobs:
         with:
           repository: minetest/minetest
           path: minetest
-          ref: stable-5
+          ref: 5.9.1
 
       - name: Checkout LuaJIT src
         uses: actions/checkout@v4
