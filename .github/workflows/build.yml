@@ -22,8 +22,8 @@ jobs:
         uses: actions/checkout@v4
         with:
           repository: minetest/minetest
-          path: minetest
-          ref: 5.9.1
+          path: luanti
+          ref: 0d85e826f406230a12839c49087d2c57fcb2e891
 
       - name: Checkout LuaJIT src
         uses: actions/checkout@v4
@@ -37,12 +37,12 @@ jobs:
 
       - uses: actions/upload-artifact@v4
         with:
-          name: minetestserver.tar.gz
-          path: minetest/build/minetestserver.tar.gz
+          name: luantiserver.tar.gz
+          path: luanti/build/luantiserver.tar.gz
           if-no-files-found: error
 
       - uses: actions/upload-artifact@v4
         with:
-          name: minetestserver.debug
-          path: minetest/build/minetestserver.debug
+          name: luantiserver.debug
+          path: luanti/build/luantiserver.debug
           if-no-files-found: error

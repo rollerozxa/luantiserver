@@ -9,8 +9,8 @@ pushd luajit
 make amalg -j4
 popd
 
-# Build Minetest
-pushd minetest
+# Build Luanti
+pushd luanti
 
 apply_patch ../001-silence-dirty.patch
 apply_patch ../002-expose-player-ver-info.patch
@@ -31,12 +31,14 @@ cmake .. \
 ninja
 
 # Strip server binary and create debug symbol file
-objcopy --only-keep-debug ../bin/minetestserver minetestserver.debug
-objcopy --strip-debug --add-gnu-debuglink=minetestserver.debug ../bin/minetestserver minetestserver
+objcopy --only-keep-debug ../bin/luantiserver luantiserver.debug
+objcopy --strip-debug --add-gnu-debuglink=luantiserver.debug ../bin/luantiserver luantiserver
 
 # Package it up
-mkdir -p minetest/bin
-cp minetestserver minetest/bin/
-cp -r ../builtin minetest/
-cp ../minetest.conf.example minetest/
-tar czf minetestserver.tar.gz minetest
+mkdir -p luanti/bin
+cp luantiserver luanti/bin/
+# temporary symlink
+ln -sf luantiserver luanti/bin/minetestserver
+cp -r ../builtin luanti/
+cp ../minetest.conf.example luanti/
+tar czf luantiserver.tar.gz luanti
