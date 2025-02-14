@@ -12,9 +12,6 @@ popd
 # Build Luanti
 pushd luanti
 
-apply_patch ../001-silence-dirty.patch
-apply_patch ../002-expose-player-ver-info.patch
-
 mkdir -p build; cd build
 cmake .. \
 	-DCMAKE_BUILD_TYPE=RelWithDebInfo \
