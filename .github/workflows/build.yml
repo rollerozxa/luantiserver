@@ -4,29 +4,35 @@ on:
   - push
   - pull_request
 
+env:
+  LUANTI_REF: 5.16.1
+
 jobs:
   linux:
-    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        arch: [x86_64, aarch64]
+    runs-on: ${{ matrix.arch == 'x86_64' && 'ubuntu-latest' || 'ubuntu-24.04-arm' }}
     container:
       image: debian:bullseye
       env: { LANG: "C.UTF-8" }
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
       - name: Install deps
         run: |
           apt-get update
           apt-get install -y g++ ninja-build make cmake patch libsqlite3-dev libcurl4-openssl-dev zlib1g-dev libgmp-dev libjsoncpp-dev libzstd-dev libncurses-dev --no-install-recommends
 
-      - name: Checkout Minetest src
-        uses: actions/checkout@v4
+      - name: Checkout Luanti src
+        uses: actions/checkout@v6
         with:
-          repository: minetest/minetest
+          repository: luanti-org/luanti
           path: luanti
-          ref: 5.16.0
+          ref: ${{ env.LUANTI_REF }}
 
       - name: Checkout LuaJIT src
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           repository: LuaJIT/LuaJIT
           path: luajit
@@ -34,15 +40,16 @@ jobs:
       - name: Build server
         run: |
           ./build_server.sh
+          cp luanti/build/luantiserver.tar.gz luantiserver-${{ env.LUANTI_REF }}-${{ matrix.arch }}.tar.gz
 
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
-          name: luantiserver.tar.gz
-          path: luanti/build/luantiserver.tar.gz
+          path: luantiserver-${{ env.LUANTI_REF }}-${{ matrix.arch }}.tar.gz
+          archive: false
           if-no-files-found: error
 
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
-          name: luantiserver.debug
+          name: luantiserver-${{ env.LUANTI_REF }}-${{ matrix.arch }}.debug
           path: luanti/build/luantiserver.debug
           if-no-files-found: error
