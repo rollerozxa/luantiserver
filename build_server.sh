@@ -38,6 +38,5 @@ cp luantiserver luanti/bin/
 ln -sf luantiserver luanti/bin/minetestserver
 cp -r ../builtin luanti/
 cp ../minetest.conf.example luanti/
-mkdir -p luanti/games
-mkdir -p luanti/mods
+mkdir -p luanti/{games,mods}
 tar czf luantiserver.tar.gz luanti
