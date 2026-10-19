@@ -5,7 +5,7 @@ on:
   - pull_request
 
 env:
-  LUANTI_REF: 5.17.0
+  LUANTI_REF: 5.18.0-rc1
 
 jobs:
   linux:
@@ -14,9 +14,14 @@ jobs:
         arch: [x86_64, aarch64]
     runs-on: ${{ matrix.arch == 'x86_64' && 'ubuntu-latest' || 'ubuntu-24.04-arm' }}
     container:
-      image: debian:bullseye
+      image: debian/eol:bullseye
       env: { LANG: "C.UTF-8" }
     steps:
+      - run: |
+          echo "deb http://archive.debian.org/debian bullseye main" > /etc/apt/sources.list
+          echo "deb http://snapshot.debian.org/archive/debian-security/20260831T211327Z/ bullseye-security main" >> /etc/apt/sources.list
+          echo "deb http://archive.debian.org/debian bullseye-updates main" >> /etc/apt/sources.list
+
       - uses: actions/checkout@v6
 
       - name: Install deps
